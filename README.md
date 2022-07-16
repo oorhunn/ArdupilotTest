@@ -17,3 +17,10 @@
 * Building 
 
 		./waf plane
+
+* SITL
+* * preconditions
+
+		cd ~/ardupilot/ArduCopter	
+		../Tools/autotest/sim_vehicle.py --map --console
+		sim_vehicle.py --help
