@@ -8,9 +8,10 @@
         Tools/environment_install/install-prereqs-ubuntu.sh -y 
 * Cleaning  
         
-        ./waf clean
-        ./waf list_boards 
-        ./waf configure --board CUAV-X7  
+		./waf distclean
+		./waf clean
+		./waf list_boards 
+		./waf configure --board CUAV-X7  
 
 
 * Building 
