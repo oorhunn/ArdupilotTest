@@ -12,6 +12,7 @@
         ./waf list_boards 
         ./waf configure --board CUAV-X7  
 
+
 * Building 
 
-	./waf plane
+		./waf plane
