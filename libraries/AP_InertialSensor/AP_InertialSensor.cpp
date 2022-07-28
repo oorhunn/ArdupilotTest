@@ -108,6 +108,7 @@ const AP_Param::GroupInfo AP_InertialSensor::var_info[] = {
       CALSENSFRAME : 11
      */
 
+
     // @Param: GYROFFS_X
     // @DisplayName: Gyro offsets of X axis
     // @Description: Gyro sensor offsets of X axis. This is setup on each boot during gyro calibrations

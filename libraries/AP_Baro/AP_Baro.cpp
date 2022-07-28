@@ -871,6 +871,7 @@ void AP_Baro::update(void)
         _alt_offset_active = _alt_offset;
     }
 
+
 #if HAL_LOGGING_ENABLED
     bool old_primary_healthy = sensors[_primary].healthy;
 #endif

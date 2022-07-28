@@ -309,7 +309,7 @@ void AP_AHRS::update(bool skip_ins_update)
     // allow for runtime change of orientation
     // this makes initial config easier
     update_orientation();
-
+    
     if (!skip_ins_update) {
         // tell the IMU to grab some data
         AP::ins().update();
@@ -579,6 +579,8 @@ void AP_AHRS::update_EKF3(void)
             roll  = eulers.x;
             pitch = eulers.y;
             yaw   = eulers.z;
+            hal.console->printf("%f", eulers.x);
+            hal.console->printf("\n");
 
             update_cd_values();
             update_trig();
