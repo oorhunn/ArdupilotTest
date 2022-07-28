@@ -23,7 +23,7 @@
 #include "Plane.h"
 
 #define SCHED_TASK(func, rate_hz, max_time_micros, priority) SCHED_TASK_CLASS(Plane, &plane, func, rate_hz, max_time_micros, priority)
-int test_num = 0;
+int log_slower = 0;
 
 /*
   scheduler table - all regular tasks should be listed here.
@@ -158,15 +158,13 @@ void Plane::ahrs_update()
     ahrs.update();
 
     if (should_log(MASK_LOG_IMU)) {
-        if (test_num > 1000) {
+        if (log_slower > 5) {
             AP::ins().Write_IMU();
-            test_num = 0;
+            log_slower = 0;
             
         }
         else {
-            test_num = test_num + 1;
-            hal.console->printf("anil was here !!!");
-            hal.console->printf("%d", test_num);
+            log_slower = log_slower + 1;
         }        
     }
 
