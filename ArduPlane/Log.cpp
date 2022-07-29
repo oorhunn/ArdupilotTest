@@ -234,7 +234,7 @@ void Plane::Log_Write_AETR()
 
 void Plane::Log_Write_RC(void)
 {
-    logger.Write_RCIN();
+    // logger.Write_RCIN();
     logger.Write_RCOUT();
     if (rssi.enabled()) {
         logger.Write_RSSI();

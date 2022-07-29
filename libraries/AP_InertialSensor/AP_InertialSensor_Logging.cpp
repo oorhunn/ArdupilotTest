@@ -2,7 +2,8 @@
 #include "AP_InertialSensor_Backend.h"
 
 #include <AP_Logger/AP_Logger.h>
-
+int acc_condition = 0;
+int gyro_condition = 0;
 // Write ACC data packet: raw accel data
 void AP_InertialSensor_Backend::Write_ACC(const uint8_t instance, const uint64_t sample_us, const Vector3f &accel) const
 {
@@ -16,7 +17,13 @@ void AP_InertialSensor_Backend::Write_ACC(const uint8_t instance, const uint64_t
             AccY      : accel.y,
             AccZ      : accel.z
         };
-        AP::logger().WriteBlock(&pkt, sizeof(pkt));
+        if (acc_condition > 5) {
+            AP::logger().WriteBlock(&pkt, sizeof(pkt));
+            acc_condition = 0;
+        }
+        else{
+            acc_condition = acc_condition + 1;
+        }
 }
 
 // Write GYR data packet: raw gyro data
@@ -32,7 +39,13 @@ void AP_InertialSensor_Backend::Write_GYR(const uint8_t instance, const uint64_t
             GyrY      : gyro.y,
             GyrZ      : gyro.z
         };
-        AP::logger().WriteBlock(&pkt, sizeof(pkt));
+        if (gyro_condition > 5){
+            AP::logger().WriteBlock(&pkt, sizeof(pkt));
+            gyro_condition = 0;
+        }
+        else{
+            gyro_condition = gyro_condition + 1;
+        }
 }
 
 // Write IMU data packet: raw accel/gyro data

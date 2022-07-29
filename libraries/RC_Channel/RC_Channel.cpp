@@ -936,18 +936,18 @@ bool RC_Channel::run_aux_function(aux_func_t ch_option, AuxSwitchPos pos, AuxFun
     // @Field: pos: switch position when function triggered
     // @Field: source: source of auxiliary function invocation
     // @Field: result: true if function was successful
-    AP::logger().Write(
-        "AUXF",
-        "TimeUS,function,pos,source,result",
-        "s#---",
-        "F----",
-        "QHBBB",
-        AP_HAL::micros64(),
-        uint16_t(ch_option),
-        uint8_t(pos),
-        uint8_t(source),
-        uint8_t(ret)
-        );
+    // AP::logger().Write(
+    //     "AUXF",
+    //     "TimeUS,function,pos,source,result",
+    //     "s#---",
+    //     "F----",
+    //     "QHBBB",
+    //     AP_HAL::micros64(),
+    //     uint16_t(ch_option),
+    //     uint8_t(pos),
+    //     uint8_t(source),
+    //     uint8_t(ret)
+    //     );
     return ret;
 }
 
