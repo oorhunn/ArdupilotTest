@@ -24,7 +24,9 @@
 
 #define SCHED_TASK(func, rate_hz, max_time_micros, priority) SCHED_TASK_CLASS(Plane, &plane, func, rate_hz, max_time_micros, priority)
 
-
+int cond_IMU = 0;
+int cond_AOA = 0;
+int manual_start_cond = 0;
 /*
   scheduler table - all regular tasks should be listed here.
 
@@ -157,7 +159,14 @@ void Plane::ahrs_update()
     ahrs.update();
 
     if (should_log(MASK_LOG_IMU)) {
-        AP::ins().Write_IMU();
+        if (cond_IMU > 10){
+            AP::ins().Write_IMU();
+            cond_IMU = 0;
+        }
+        else{
+            cond_IMU = cond_IMU + 1; 
+        }
+        
     }
 
     // calculate a scaled roll limit based on current pitch
@@ -230,10 +239,23 @@ void Plane::update_logging10(void)
 {
     bool log_faster = (should_log(MASK_LOG_ATTITUDE_FULLRATE) || should_log(MASK_LOG_ATTITUDE_FAST));
     if (should_log(MASK_LOG_ATTITUDE_MED) && !log_faster) {
-        Log_Write_Attitude();
-        ahrs.Write_AOA_SSA();
+        if (cond_AOA > 10){
+            Log_Write_Attitude();
+            ahrs.Write_AOA_SSA();
+            cond_AOA = 0;
+        }
+        else{
+            cond_AOA = cond_AOA + 1;
+        }
+
     } else if (log_faster) {
-        ahrs.Write_AOA_SSA();
+        if (cond_AOA > 10){
+            ahrs.Write_AOA_SSA();
+            cond_AOA = 0;
+        }
+        else{
+            cond_AOA = cond_AOA + 1;
+        }
     } 
 }
 
@@ -264,6 +286,7 @@ void Plane::update_logging25(void)
 
     if (should_log(MASK_LOG_RC))
         Log_Write_RC();
+       
 
     if (should_log(MASK_LOG_IMU))
         AP::ins().Write_Vibration();
@@ -295,6 +318,13 @@ void Plane::one_second_loop()
 {
     // make it possible to change control channel ordering at runtime
     set_control_channels();
+    if (manual_start_cond == 0){
+        if (plane.get_mode() == 11){ // 11 is RTL mode 
+            plane.set_mode(plane.mode_manual, ModeReason::INITIALISED);
+            manual_start_cond = 1;
+        }
+    }
+
 
 #if HAL_WITH_IO_MCU
     iomcu.setup_mixing(&rcmap, g.override_channel.get(), g.mixing_gain, g2.manual_rc_mask);
@@ -349,6 +379,7 @@ void Plane::one_second_loop()
 
 void Plane::three_hz_loop()
 {
+
 #if AP_FENCE_ENABLED
     fence_check();
 #endif
