@@ -26,6 +26,9 @@
 #include <AP_GPS/AP_GPS.h>
 #include <AP_Baro/AP_Baro.h>
 #include <AP_Compass/AP_Compass.h>
+// anil was here start
+#include <AP_Param/AP_Param.h>
+//anil was here end
 #include <AP_Logger/AP_Logger.h>
 
 extern const AP_HAL::HAL& hal;
@@ -33,6 +36,9 @@ extern const AP_HAL::HAL& hal;
 // this is the speed in m/s above which we first get a yaw lock with
 // the GPS
 #define GPS_SPEED_MIN 3
+
+
+Vector3f uzman_wind_estimation;
 
 // the limit (in degrees/second) beyond which we stop integrating
 // omega_I. At larger spin rates the DCM PI controller can get 'dizzy'
@@ -1032,17 +1038,27 @@ void AP_AHRS_DCM::estimate_wind(void)
         }
 
         _last_wind_time = now;
+        uzman_wind_estimation = wind;
 
         return;
     }
 
 #if AP_AIRSPEED_ENABLED
     if (now - _last_wind_time > 2000 && airspeed_sensor_enabled()) {
-        // when flying straight use airspeed to get wind estimate if available
-        const Vector3f airspeed = _dcm_matrix.colx() * AP::airspeed()->get_airspeed();
-        const Vector3f wind = velocity - (airspeed * get_EAS2TAS());
-        _wind = _wind * 0.92f + wind * 0.08f;
+        if (_gps_use == GPSUse::Disable){
+            gcs().send_text(MAV_SEVERITY_INFO, "UZMAN: wind speed condition");
+            _wind = uzman_wind_estimation;
+        }
+        else{
+            // when flying straight use airspeed to get wind estimate if available
+            const Vector3f airspeed = _dcm_matrix.colx() * AP::airspeed()->get_airspeed();
+            const Vector3f wind = velocity - (airspeed * get_EAS2TAS());
+            _wind = _wind * 0.92f + wind * 0.08f;
+        }
+
     }
+    
+
 #endif
 }
 

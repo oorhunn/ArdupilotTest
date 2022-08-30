@@ -599,7 +599,7 @@ public:
     void set_vehicle_class(VehicleClass vclass) {
         _vehicle_class = vclass;
     }
-
+    int uzman_gps_use(GPSUse);
     // get the view
     AP_AHRS_View *get_view(void) const { return _view; };
 

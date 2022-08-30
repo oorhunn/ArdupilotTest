@@ -3249,7 +3249,10 @@ const EKFGSF_yaw *AP_AHRS::get_yaw_estimator(void) const
     }
     // since there is no default case above, this is unreachable
     return nullptr;
+
 }
+
+
 
 // singleton instance
 AP_AHRS *AP_AHRS::_singleton;
